@@ -1,5 +1,9 @@
 package edu.gmu.fuzzydr.model.agents;
 
-public class Place {
+public abstract class Place {
+	
+	
+	
+	
 
 }
