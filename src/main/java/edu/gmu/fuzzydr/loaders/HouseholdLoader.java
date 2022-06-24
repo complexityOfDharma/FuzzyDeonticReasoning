@@ -1,5 +1,13 @@
 package edu.gmu.fuzzydr.loaders;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import edu.gmu.fuzzydr.controller.Config;
+import edu.gmu.fuzzydr.controller.FuzzyDRController;
+import edu.gmu.fuzzydr.model.agents.Household;
 
 /**
  * 
@@ -18,8 +26,78 @@ package edu.gmu.fuzzydr.loaders;
  */
 public class HouseholdLoader {
 
-	
-	
-	
-	
+	public static void main(final String[] args) throws IOException 
+    {
+        // Creating instance to avoid static member methods
+		HouseholdLoader instance = new HouseholdLoader();
+
+        //InputStream is = instance.getFileAsIOStream("edu/gmu/fuzzydr/resources/synthpop/households.txt");
+        InputStream is = instance.getFileAsIOStream(Config.getHouseholdPath());
+        //DEBUG: instance.printFileContent(is);
+        instance.loadHouseholds(is);
+    }
+
+    private InputStream getFileAsIOStream(final String fileName) 
+    {
+        InputStream ioStream = this.getClass()
+            .getClassLoader()
+            .getResourceAsStream(fileName);
+        
+        if (ioStream == null) {
+            throw new IllegalArgumentException(fileName + " is not found");
+        }
+        return ioStream;
+    }
+
+    private void loadHouseholds(InputStream is) throws IOException
+    {
+        try (InputStreamReader isr = new InputStreamReader(is); 
+                BufferedReader br = new BufferedReader(isr);) 
+        {
+            String line;
+            
+            System.out.print("Loading households ...");
+            
+            br.readLine();  // read and discard header row.
+            
+            while ((line = br.readLine()) != null) {
+            	String[] fields = line.split("\t");
+    			
+    			int hhID = Integer.parseInt(fields[0]);
+    			String stcotrbg = fields[1].trim();
+    			int hhRace = Integer.parseInt(fields[2]);
+    			int hhIncome = Integer.parseInt(fields[3]);
+    			double hhLat = Double.parseDouble(fields[4]);
+    			double hhLon = Double.parseDouble(fields[5]);
+    			
+    			// instantiate household based on data row.
+    			Household h = new Household(hhID, stcotrbg, hhRace, hhIncome, hhLat, hhLon);
+    			FuzzyDRController.masterList_Households.add(h);
+            }
+            is.close();
+            
+            System.out.println(" ... household loading complete.");
+            //System.out.println(FuzzyDRController.masterList_Households.size());
+        }
+    }
+    
+    
+    /**
+     * Test method to print file contents.
+     * @param is
+     * @throws IOException
+     */
+    private void printFileContent(InputStream is) throws IOException 
+    {
+        try (InputStreamReader isr = new InputStreamReader(is); 
+                BufferedReader br = new BufferedReader(isr);) 
+        {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            is.close();
+        }
+    }
+		
 }
