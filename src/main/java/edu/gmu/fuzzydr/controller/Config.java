@@ -21,6 +21,7 @@ public class Config {
 	
 	private static final String householdResourcePath = "edu/gmu/fuzzydr/resources/synthpop/households.txt";
 	private static final String workplaceResourcePath = "edu/gmu/fuzzydr/resources/synthpop/workplaces.txt";
+	private static final String schoolResourcePath = "edu/gmu/fuzzydr/resources/synthpop/schools.txt";
 	private static final String shapefileResourcePath = "edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.shp";
 	
 	private static final String timestamp = getDateTime();
@@ -40,6 +41,10 @@ public class Config {
 	
 	public static String getWorkplacePath() {
 		return workplaceResourcePath;
+	}
+	
+	public static String getSchoolsPath() {
+		return schoolResourcePath;
 	}
 	
 	public static String getShapefileResourcePath() {

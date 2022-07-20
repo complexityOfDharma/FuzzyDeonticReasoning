@@ -15,6 +15,7 @@ import java.util.HashMap;
 import com.vividsolutions.jts.geom.Envelope;
 
 import edu.gmu.fuzzydr.model.agents.Household;
+import edu.gmu.fuzzydr.model.agents.School;
 import edu.gmu.fuzzydr.model.agents.Workplace;
 import sim.engine.SimState;
 import sim.field.geo.GeomVectorField;
@@ -31,6 +32,9 @@ public class FuzzyDRController extends SimState {
 	
     public static ArrayList<Workplace> masterList_Workplaces = new ArrayList<Workplace>();
     public static HashMap<Integer, Workplace> masterMap_Workplaces = new HashMap<Integer, Workplace>();
+    
+    public static ArrayList<School> masterList_Schools = new ArrayList<School>();
+    public static HashMap<Integer, School> masterMap_Schools = new HashMap<Integer, School>();
     
     /**
      * Default constructor.

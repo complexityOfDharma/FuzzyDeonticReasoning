@@ -1,22 +1,19 @@
 package edu.gmu.fuzzydr.model.agents;
 
-import sim.engine.SimState;
-import sim.engine.Steppable;
-import sim.util.Int2D;
-import edu.gmu.fuzzydr.controller.SimUtil;
-
 import java.awt.Color;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import edu.gmu.fuzzydr.controller.SimUtil;
+import sim.engine.SimState;
+import sim.engine.Steppable;
+import sim.util.Int2D;
 
-public class Household implements Steppable {
-
-	public int householdID;
-	public String stcotrbg;
-	public int race;
-	public int income;
+public class School implements Steppable {
+	
+	public int schoolID;
+	public String stco;
 	public double lat;
 	public double lon;
 	public Color myColor;
@@ -35,12 +32,10 @@ public class Household implements Steppable {
 	 * Constructor.
 	 * @param id
 	 */
-	public Household(int id, String stcotrbg, int race, int income, double lat, double lon)
+	public School(int id, String stco, double lat, double lon)
 	{
-		this.householdID = id;
-		this.stcotrbg = stcotrbg;
-		this.race = race;
-		this.income = income;
+		this.schoolID = id;
+		this.stco = stco;
 		this.lat = lat;
 		this.lon = lon;
 		
@@ -72,6 +67,5 @@ public class Household implements Steppable {
 	{
 		return location;
 	}
-	
-	
+
 }
