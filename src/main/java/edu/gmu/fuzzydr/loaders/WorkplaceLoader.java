@@ -7,24 +7,9 @@ import java.io.InputStreamReader;
 
 import edu.gmu.fuzzydr.controller.Config;
 import edu.gmu.fuzzydr.controller.FuzzyDRController;
-import edu.gmu.fuzzydr.model.agents.Household;
+import edu.gmu.fuzzydr.model.agents.Workplace;
 
-/**
- * 
- * Of note, the agent populations are drawn from FRED (A Framework for Reconstructing Epidemic Dynamics),
- * developed by Pitt Public Health Dynamics Laboratory (https://fred.publichealth.pitt.edu/). The synthetic
- * population files are located here: https://fred.publichealth.pitt.edu/syn_pops
- * 
- * FRED citation:
- * Grefenstette JJ, Brown ST, Rosenfeld R, Depasse J, Stone NT, Cooley PC, Wheaton WD, Fyshe A, Galloway DD, 
- * Sriram A, Guclu H, Abraham T, Burke DS. FRED (A Framework for Reconstructing Epidemic Dynamics): An open-
- * source software system for modeling infectious diseases and control strategies using census-based populations. 
- * BMC Public Health, 2013 Oct;13(1), 940. doi: 10.1186/1471-2458-13-940. PubMed PMID: 24103508
- * 
- * @author bhorio
- *
- */
-public class HouseholdLoader {
+public class WorkplaceLoader {
 
 	/**
 	 * Class Main for testing.
@@ -34,12 +19,12 @@ public class HouseholdLoader {
 	public static void main(final String[] args) throws IOException 
     {
         // Creating instance to avoid static member methods
-		HouseholdLoader instance = new HouseholdLoader();
+		WorkplaceLoader instance = new WorkplaceLoader();
 
-        //InputStream is = instance.getFileAsIOStream("edu/gmu/fuzzydr/resources/synthpop/households.txt");
-        InputStream is = instance.getFileAsIOStream(Config.getHouseholdPath());
+        //InputStream is = instance.getFileAsIOStream("edu/gmu/fuzzydr/resources/synthpop/workplaces.txt");
+        InputStream is = instance.getFileAsIOStream(Config.getWorkplacePath());
         //DEBUG: instance.printFileContent(is);
-        instance.loadHouseholds(is);
+        instance.loadWorkplaces(is);
     }
 
     private InputStream getFileAsIOStream(final String fileName) 
@@ -54,36 +39,32 @@ public class HouseholdLoader {
         return ioStream;
     }
 
-    private void loadHouseholds(InputStream is) throws IOException
+    private void loadWorkplaces(InputStream is) throws IOException
     {
         try (InputStreamReader isr = new InputStreamReader(is); 
                 BufferedReader br = new BufferedReader(isr);) 
         {
             String line;
             
-            System.out.print("Loading households ...");
+            System.out.print("Loading workplaces ...");
             
             br.readLine();  // read and discard header row.
             
             while ((line = br.readLine()) != null) {
             	String[] fields = line.split("\t");
     			
-    			int hhID = Integer.parseInt(fields[0]);
-    			String stcotrbg = fields[1].trim();
-    			int hhRace = Integer.parseInt(fields[2]);
-    			int hhIncome = Integer.parseInt(fields[3]);
-    			double hhLat = Double.parseDouble(fields[4]);
-    			double hhLon = Double.parseDouble(fields[5]);
+    			int wrkID = Integer.parseInt(fields[0]);
+    			double wrkLat = Double.parseDouble(fields[1]);
+    			double wrkLon = Double.parseDouble(fields[2]);
     			
     			// instantiate household based on data row.
-    			Household h = new Household(hhID, stcotrbg, hhRace, hhIncome, hhLat, hhLon);
-    			FuzzyDRController.masterList_Households.add(h);
+    			Workplace h = new Workplace(wrkID, wrkLat, wrkLon);
+    			FuzzyDRController.masterList_Workplaces.add(h);
             }
             is.close();
             
-            int count = FuzzyDRController.masterList_Households.size();
-            System.out.println(" ... complete. " + count + " households loaded.");
-            
+            int count = FuzzyDRController.masterList_Workplaces.size();
+            System.out.println(" ... complete. " + count + " workplaces loaded.");
         }
     }
     
@@ -105,5 +86,11 @@ public class HouseholdLoader {
             is.close();
         }
     }
-		
+	
+	
+	
+	
+	
+	
+	
 }

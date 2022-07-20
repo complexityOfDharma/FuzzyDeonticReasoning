@@ -20,22 +20,30 @@ public class Config {
 	public static double FFX_ASPECT_RATIO = Math.cos(Math.toRadians(38.831227));		// 38.831227, -77.274628
 	
 	private static final String householdResourcePath = "edu/gmu/fuzzydr/resources/synthpop/households.txt";
+	private static final String workplaceResourcePath = "edu/gmu/fuzzydr/resources/synthpop/workplaces.txt";
+	private static final String shapefileResourcePath = "edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.shp";
 	
 	private static final String timestamp = getDateTime();
 	
 	/**
 	 * @return timestamp for unique output file names.
 	 */
-	private final static String getDateTime()  
-	{  
+	private final static String getDateTime() {  
 	    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 	    df.setTimeZone(TimeZone.getTimeZone("EST"));  
 	    return df.format(new Date());  
 	}
 
-	public static String getHouseholdPath() 
-	{
+	public static String getHouseholdPath() {
 		return householdResourcePath;
+	}
+	
+	public static String getWorkplacePath() {
+		return workplaceResourcePath;
+	}
+	
+	public static String getShapefileResourcePath() {
+		return shapefileResourcePath;
 	}
 	
 }
