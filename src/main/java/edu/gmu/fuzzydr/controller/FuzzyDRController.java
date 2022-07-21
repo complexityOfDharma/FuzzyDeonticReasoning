@@ -8,7 +8,7 @@
 
 package edu.gmu.fuzzydr.controller;
 
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -57,7 +57,10 @@ public class FuzzyDRController extends SimState {
         	System.out.println("Reading shapefiles... ");
         	
             // read the data
-        	ShapeFileImporter.read(FuzzyDRController.class.getResource(Config.getShapefileResourcePath()), zipCodeSpace);
+        	ShapeFileImporter.read(
+        			FuzzyDRController.class.getResource(Config.getShapefileResourcePath()), 
+        			FuzzyDRController.class.getResource(Config.getShapefileDbResourcePath()), 
+        			zipCodeSpace);
         	            
             System.out.println("... shapefiles loaded, setting up MBR.");
             // Make all the bounding rectangles match one another
@@ -70,7 +73,7 @@ public class FuzzyDRController extends SimState {
             System.out.println("... MBR set.");
             System.out.println("");
         } 
-        catch (FileNotFoundException ex)
+        catch (Exception ex)
         {
         	System.out.println(ex.getCause());
         	//ex.printStackTrace();
