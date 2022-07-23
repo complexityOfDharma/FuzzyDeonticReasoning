@@ -1,8 +1,11 @@
 /*
- * FuzzyDR: An agent-based model of institutions and individual deontic reasoning related to compliance
- * with institutions via a fuzzy logic approach.
+ * FuzzyDR: An agent-based model of institutions and application of fuzzy logic for modeling
+ * individual deontic reasoning. A geospatial contagion model for COVID is presented with 
+ * heterogeneous patterns of life between households, schools, workplaces, and gathering locations.
+ * The model provides the basis for computationally exploring the modeling of individual compliance
+ * with institutions of nonpharmaceutical intervention containment strategies.  
  * 
- * @author Brant Horio (2022). George Mason University
+ * @author Brant Horio (2023). George Mason University
  * 
  */
 
@@ -31,7 +34,7 @@ public class FuzzyDRController extends SimState {
 	public GeomVectorField zipCodeSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
 	public GeomVectorField householdSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
 	
-    public static ArrayList<Household> masterList_Households = new ArrayList<Household>();
+	public static ArrayList<Household> masterList_Households = new ArrayList<Household>();
     public static HashMap<Integer, Household> masterMap_Households = new HashMap<Integer, Household>();
 	
     public static ArrayList<Workplace> masterList_Workplaces = new ArrayList<Workplace>();
@@ -55,8 +58,8 @@ public class FuzzyDRController extends SimState {
     	super(seed);
     	
     	System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    	System.out.println("AGENT-BASED INSTITUTIONAL MODELING AND FUZZY DEONTIC REASONING:");
-    	System.out.println("Exploring Institutions for COVID Containment through Nonpharmaceutical Interventions");
+    	System.out.println("FuzzyDR: AGENT-BASED INSTITUTIONAL MODELING AND FUZZY DEONTIC REASONING");
+    	System.out.println("Exploring Institutional Ccompliance with COVID Containment Strategies through Nonpharmaceutical Interventions");
     	System.out.println("");
     	System.out.println("@author: Brant Horio, George Mason University, 2023");
     	System.out.println("");
