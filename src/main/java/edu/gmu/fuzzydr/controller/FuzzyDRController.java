@@ -30,13 +30,13 @@ import sim.util.geo.MasonGeometry;
 public class FuzzyDRController extends SimState {
 
 	public static Envelope MBR;
-	
-	public GeomVectorField zipCodeSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
-	public GeomVectorField householdSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
-	
-	public static ArrayList<Household> masterList_Households = new ArrayList<Household>();
+    
+    public GeomVectorField zipCodeSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
+    public GeomVectorField householdSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
+    
+    public static ArrayList<Household> masterList_Households = new ArrayList<Household>();
     public static HashMap<Integer, Household> masterMap_Households = new HashMap<Integer, Household>();
-	
+    
     public static ArrayList<Workplace> masterList_Workplaces = new ArrayList<Workplace>();
     public static HashMap<Integer, Workplace> masterMap_Workplaces = new HashMap<Integer, Workplace>();
     
