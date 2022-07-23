@@ -63,8 +63,8 @@ public class WorkplaceLoader {
             }
             is.close();
             
-            int count = FuzzyDRController.masterList_Workplaces.size();
-            System.out.println(" ... complete. " + count + " workplaces loaded.");
+            //DEBUG: int count = FuzzyDRController.masterList_Workplaces.size();
+            //DEBUG: System.out.println(" ... complete. " + count + " workplaces loaded.");
         }
     }
     

@@ -39,9 +39,16 @@ public class HouseholdLoader {
         //InputStream is = instance.getFileAsIOStream("edu/gmu/fuzzydr/resources/synthpop/households.txt");
         InputStream is = instance.getFileAsIOStream(Config.getHouseholdPath());
         //DEBUG: instance.printFileContent(is);
-        instance.loadHouseholds(is);
+        //instance.loadHouseholds(is);
+        instance.loadHouseholds(Config.getHouseholdPath());
     }
 
+	
+	public void loadHouseholds(String file) throws IOException {
+		doLoad(getFileAsIOStream(file));
+	}
+	
+		
     private InputStream getFileAsIOStream(final String fileName) 
     {
         InputStream ioStream = this.getClass()
@@ -54,7 +61,8 @@ public class HouseholdLoader {
         return ioStream;
     }
 
-    private void loadHouseholds(InputStream is) throws IOException
+    //private void loadHouseholds(InputStream is) throws IOException
+    private void doLoad(InputStream is) throws IOException
     {
         try (InputStreamReader isr = new InputStreamReader(is); 
                 BufferedReader br = new BufferedReader(isr);) 
@@ -81,8 +89,8 @@ public class HouseholdLoader {
             }
             is.close();
             
-            int count = FuzzyDRController.masterList_Households.size();
-            System.out.println(" ... complete. " + count + " households loaded.");
+            //DEBUG: int count = FuzzyDRController.masterList_Households.size();
+            //DEBUG: System.out.println(" ... complete. " + count + " households loaded.");
             
         }
     }

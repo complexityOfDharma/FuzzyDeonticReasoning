@@ -8,22 +8,26 @@
 
 package edu.gmu.fuzzydr.controller;
 
-//import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import edu.gmu.fuzzydr.loaders.HouseholdLoader;
 import edu.gmu.fuzzydr.model.agents.Household;
 import edu.gmu.fuzzydr.model.agents.School;
 import edu.gmu.fuzzydr.model.agents.Workplace;
 import sim.engine.SimState;
 import sim.field.geo.GeomVectorField;
 import sim.io.geo.ShapeFileImporter;
+import sim.util.geo.MasonGeometry;
 
 @SuppressWarnings("serial")
 public class FuzzyDRController extends SimState {
 
+	public static Envelope MBR;
+	
 	public GeomVectorField zipCodeSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
 	public GeomVectorField householdSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
 	
@@ -36,15 +40,29 @@ public class FuzzyDRController extends SimState {
     public static ArrayList<School> masterList_Schools = new ArrayList<School>();
     public static HashMap<Integer, School> masterMap_Schools = new HashMap<Integer, School>();
     
+    public int count_SUSCEPTIBLE = 0;
+    public int count_EXPOSED = 0;
+    public int count_INFECTED = 0;
+    public int count_RECOVERED = 0;
+    
     /**
      * Default constructor.
      */
     public FuzzyDRController() { super(0); };
 	
     
-    public FuzzyDRController(long seed) {
+    public FuzzyDRController(long seed) throws IOException {
     	super(seed);
     	
+    	System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    	System.out.println("AGENT-BASED INSTITUTIONAL MODELING AND FUZZY DEONTIC REASONING:");
+    	System.out.println("Exploring Institutions for COVID Containment through Nonpharmaceutical Interventions");
+    	System.out.println("");
+    	System.out.println("@author: Brant Horio, George Mason University, 2023");
+    	System.out.println("");
+    	System.out.println("Starting simulation --- Scenario: ");    // + ModelConfigUtil.scenario + " ___");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        
     	readShapefileData();
     	initialize();
     	
@@ -54,7 +72,7 @@ public class FuzzyDRController extends SimState {
     {
         try
         {
-        	System.out.println("Reading shapefiles... ");
+        	System.out.print("Reading shapefiles... // ");
         	
             // read the data
         	ShapeFileImporter.read(
@@ -62,13 +80,13 @@ public class FuzzyDRController extends SimState {
         			FuzzyDRController.class.getResource(Config.getShapefileDbResourcePath()), 
         			zipCodeSpace);
         	            
-            System.out.println("... shapefiles loaded, setting up MBR.");
+            System.out.print("... shapefiles loaded, setting up MBR... // ");
             // Make all the bounding rectangles match one another
-            Envelope MBR = zipCodeSpace.getMBR();
+            MBR = zipCodeSpace.getMBR();
             /////MBR.expandToInclude(householdSpace.getMBR());
             
             zipCodeSpace.setMBR(MBR);
-            /////householdSpace.setMBR(MBR);
+            householdSpace.setMBR(MBR);
             
             System.out.println("... MBR set.");
             System.out.println("");
@@ -83,13 +101,67 @@ public class FuzzyDRController extends SimState {
         }
     }
     
-    private void initialize() {
+    private void initialize() throws IOException {
+    	// clear GeomVectorFields
+    	zipCodeSpace.clear();
+    	householdSpace.clear();
     	
+    	// clear data collections.
+    	masterList_Households.clear();
+    	masterMap_Households.clear();
+        
+        masterList_Schools.clear(); 
+        masterMap_Schools.clear();
+        
+        masterList_Workplaces.clear(); 
+        masterMap_Workplaces.clear();
     	
+        // clear output collection.
+        // CLEAR SEIR WRITER GOES HERE...
+    	
+    	instantiateHouseholds();
+    	instantiateWorkplaces();
+    	instantiateSchools();
+    	instantiateAgentPopulation();
     	
     }
     
     
+    private void instantiateHouseholds() throws IOException {
+    	
+    	HouseholdLoader hl = new HouseholdLoader();
+    	hl.loadHouseholds(Config.getHouseholdPath());
+    	
+    	for (Household h : masterList_Households) {
+    		householdSpace.addGeometry(new MasonGeometry(h.getGeometry()));
+    	}
+    	
+    	System.out.println("... household instantiation complete: " + masterList_Households.size() + " households.");
+    }
+    
+    private void instantiateWorkplaces() {
+    	
+    }
+
+    private void instantiateSchools() {
+	
+	}
+	
+	private void instantiateAgentPopulation() {
+		
+	}
+    
+	
+	public void start() {
+		super.start();
+		
+		for (Household h : masterList_Households) {
+			schedule.scheduleRepeating(h, 0, 1.0);
+		}
+		
+		//DEBUG: System.out.println("All households added to simulation schedule.");
+	}
+	
     
 	/**
 	 * Simulation main.

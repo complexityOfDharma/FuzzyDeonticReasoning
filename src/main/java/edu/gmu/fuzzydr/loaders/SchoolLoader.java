@@ -65,8 +65,8 @@ public class SchoolLoader {
             }
             is.close();
             
-            int count = FuzzyDRController.masterList_Schools.size();
-            System.out.println(" ... complete. " + count + " schools loaded.");
+            //DEBUG: int count = FuzzyDRController.masterList_Schools.size();
+            //DEBUG: System.out.println(" ... complete. " + count + " schools loaded.");
         }
     }
     

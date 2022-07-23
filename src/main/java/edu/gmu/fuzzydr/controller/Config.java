@@ -1,6 +1,7 @@
 package edu.gmu.fuzzydr.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,11 +20,14 @@ public class Config {
 	public static double EQ_RADIUS_EARTH_km = 6371f;
 	public static double FFX_ASPECT_RATIO = Math.cos(Math.toRadians(38.831227));		// 38.831227, -77.274628
 	
+	// NOTE: text file path names DO NOT require preceding slash.
 	private static final String householdResourcePath = "edu/gmu/fuzzydr/resources/synthpop/households.txt";
 	private static final String workplaceResourcePath = "edu/gmu/fuzzydr/resources/synthpop/workplaces.txt";
 	private static final String schoolResourcePath = "edu/gmu/fuzzydr/resources/synthpop/schools.txt";
-	private static final String shapefileResourcePath = "edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.shp";
-	private static final String shapefileDbResourcePath = "edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.dbf";
+	
+	// NOTE: shape file path names require preceding slash.
+	private static final String shapefileResourcePath = "/edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.shp";
+	private static final String shapefileDbResourcePath = "/edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.dbf";
 	
 	private static final String timestamp = getDateTime();
 	
@@ -55,4 +59,15 @@ public class Config {
 	public static String getShapefileDbResourcePath() {
 		return shapefileDbResourcePath;
 	}
+	
+	/**
+	 * Test.
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(final String[] args) throws IOException 
+    {
+		System.out.println(getShapefileResourcePath());
+    }
+	
 }
