@@ -86,11 +86,16 @@ public class HouseholdLoader {
     			// instantiate household based on data row.
     			Household h = new Household(hhID, stcotrbg, hhRace, hhIncome, hhLat, hhLon);
     			FuzzyDRController.masterList_Households.add(h);
+    			FuzzyDRController.masterMap_Households.put(hhID, h);
+    			
             }
             is.close();
             
             //DEBUG: int count = FuzzyDRController.masterList_Households.size();
             //DEBUG: System.out.println(" ... complete. " + count + " households loaded.");
+            
+            //System.out.println(FuzzyDRController.masterMap_Households.size());
+            //DEBUG: System.out.println(FuzzyDRController.masterMap_Households.get(43746287).getIncome()); //answer: 62500
             
         }
     }

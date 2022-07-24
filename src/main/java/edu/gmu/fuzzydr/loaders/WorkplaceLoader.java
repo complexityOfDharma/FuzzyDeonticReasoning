@@ -60,6 +60,7 @@ public class WorkplaceLoader {
     			// instantiate household based on data row.
     			Workplace w = new Workplace(wrkID, wrkLat, wrkLon);
     			FuzzyDRController.masterList_Workplaces.add(w);
+    			FuzzyDRController.masterMap_Workplaces.put(wrkID, w);
             }
             is.close();
             

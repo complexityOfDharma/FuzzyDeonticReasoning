@@ -27,15 +27,17 @@ import sim.io.geo.ShapeFileImporter;
 import sim.util.geo.MasonGeometry;
 
 @SuppressWarnings("serial")
-public class FuzzyDRController extends SimState {
-
+public class FuzzyDRController extends SimState {	
+	
 	public static Envelope MBR;
     
     public GeomVectorField zipCodeSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
     public GeomVectorField householdSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
     
     public static ArrayList<Household> masterList_Households = new ArrayList<Household>();
+    public static ArrayList<Household> getMasterList_Households() { return masterList_Households; }
     public static HashMap<Integer, Household> masterMap_Households = new HashMap<Integer, Household>();
+    public static HashMap<Integer, Household> getMasterMap_Households() { return masterMap_Households; }
     
     public static ArrayList<Workplace> masterList_Workplaces = new ArrayList<Workplace>();
     public static HashMap<Integer, Workplace> masterMap_Workplaces = new HashMap<Integer, Workplace>();
@@ -57,6 +59,8 @@ public class FuzzyDRController extends SimState {
     public FuzzyDRController(long seed) throws IOException {
     	super(seed);
     	
+    	readShapefileData();
+    	
     	System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     	System.out.println("FuzzyDR: AGENT-BASED INSTITUTIONAL MODELING AND FUZZY DEONTIC REASONING");
     	System.out.println("Exploring Institutional Ccompliance with COVID Containment Strategies through Nonpharmaceutical Interventions");
@@ -66,16 +70,14 @@ public class FuzzyDRController extends SimState {
     	System.out.println("Starting simulation --- Scenario: ");    // + ModelConfigUtil.scenario + " ___");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         
-    	readShapefileData();
     	initialize();
-    	
     }
     
     private void readShapefileData()
     {
         try
         {
-        	System.out.print("Reading shapefiles... // ");
+        	//System.out.println("Reading shapefiles... // ");
         	
             // read the data
         	ShapeFileImporter.read(
@@ -83,7 +85,8 @@ public class FuzzyDRController extends SimState {
         			FuzzyDRController.class.getResource(Config.getShapefileDbResourcePath()), 
         			zipCodeSpace);
         	            
-            System.out.print("... shapefiles loaded, setting up MBR... // ");
+            System.out.println("");
+        	System.out.print("Reading shapefiles... // ... shapefiles loaded, setting up MBR... // ");
             // Make all the bounding rectangles match one another
             MBR = zipCodeSpace.getMBR();
             /////MBR.expandToInclude(householdSpace.getMBR());
@@ -92,7 +95,6 @@ public class FuzzyDRController extends SimState {
             householdSpace.setMBR(MBR);
             
             System.out.println("... MBR set.");
-            System.out.println("");
         } 
         catch (Exception ex)
         {
@@ -136,7 +138,13 @@ public class FuzzyDRController extends SimState {
     	hl.loadHouseholds(Config.getHouseholdPath());
     	
     	for (Household h : masterList_Households) {
-    		householdSpace.addGeometry(new MasonGeometry(h.getGeometry()));
+    		
+    		h.assignModelState(this);
+    		MasonGeometry mg = new MasonGeometry(h.getGeometry());
+    		mg.addAttribute("householdID", h.getHouseholdID());
+    		householdSpace.addGeometry(mg);
+    		
+    		//householdSpace.addGeometry(new MasonGeometry(h.getGeometry()));
     	}
     	
     	System.out.println("... household instantiation complete: " + masterList_Households.size() + " households.");
@@ -175,5 +183,6 @@ public class FuzzyDRController extends SimState {
 		System.exit(0);
 		
 	}
+	
 	
 }

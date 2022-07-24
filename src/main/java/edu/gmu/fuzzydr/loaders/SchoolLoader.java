@@ -62,6 +62,7 @@ public class SchoolLoader {
     			// instantiate household based on data row.
     			School s = new School(schID, stco, schLat, schLon);
     			FuzzyDRController.masterList_Schools.add(s);
+    			FuzzyDRController.masterMap_Schools.put(schID, s);
             }
             is.close();
             
