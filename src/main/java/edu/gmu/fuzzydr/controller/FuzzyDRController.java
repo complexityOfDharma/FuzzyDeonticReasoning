@@ -63,7 +63,7 @@ public class FuzzyDRController extends SimState {
     	
     	System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     	System.out.println("FuzzyDR: AGENT-BASED INSTITUTIONAL MODELING AND FUZZY DEONTIC REASONING");
-    	System.out.println("Exploring Institutional Ccompliance with COVID Containment Strategies through Nonpharmaceutical Interventions");
+    	System.out.println("Exploring Institutional Compliance with COVID Containment Strategies through Nonpharmaceutical Interventions");
     	System.out.println("");
     	System.out.println("@author: Brant Horio, George Mason University, 2023");
     	System.out.println("");

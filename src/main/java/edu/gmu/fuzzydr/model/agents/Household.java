@@ -56,7 +56,7 @@ public class Household implements Steppable {
 		
 		// set color for visualization
 		//this.myColor = new Color(23, 184, 232, 1);
-		this.myColor = new Color(0,0,0);
+		this.myColor = new Color(23, 184, 232, 50);
 	}
 	
 	@Override
