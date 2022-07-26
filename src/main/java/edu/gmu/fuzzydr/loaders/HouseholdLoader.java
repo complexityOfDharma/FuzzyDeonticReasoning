@@ -83,7 +83,6 @@ public class HouseholdLoader {
     			double hhLat = Double.parseDouble(fields[4]);
     			double hhLon = Double.parseDouble(fields[5]);
     			
-    			// instantiate household based on data row.
     			Household h = new Household(hhID, stcotrbg, hhRace, hhIncome, hhLat, hhLon);
     			FuzzyDRController.masterList_Households.add(h);
     			FuzzyDRController.masterMap_Households.put(hhID, h);

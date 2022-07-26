@@ -16,7 +16,6 @@ public class School implements Steppable {
 	public String stco;
 	public double lat;
 	public double lon;
-	public Color myColor;
 	
 	/** Object that specifies the household XY-coordinate position in the world. */
 	public Point location;
@@ -44,12 +43,13 @@ public class School implements Steppable {
 		
 		// set position in the world.
 		this.setLocation(location);
+		
 	}
 	
 	@Override
 	public void step(SimState state) {
 		// TODO Auto-generated method stub
-		this.myColor = new Color(95, 158, 160, 150);
+
 		
 	};
 	

@@ -18,7 +18,10 @@ import java.util.HashMap;
 import com.vividsolutions.jts.geom.Envelope;
 
 import edu.gmu.fuzzydr.loaders.HouseholdLoader;
+import edu.gmu.fuzzydr.loaders.SchoolLoader;
+import edu.gmu.fuzzydr.loaders.WorkplaceLoader;
 import edu.gmu.fuzzydr.model.agents.Household;
+import edu.gmu.fuzzydr.model.agents.Person;
 import edu.gmu.fuzzydr.model.agents.School;
 import edu.gmu.fuzzydr.model.agents.Workplace;
 import sim.engine.SimState;
@@ -35,20 +38,25 @@ public class FuzzyDRController extends SimState {
     public GeomVectorField householdSpace = new GeomVectorField(Config.WIDTH, Config.HEIGHT);
     
     public static ArrayList<Household> masterList_Households = new ArrayList<Household>();
-    public static ArrayList<Household> getMasterList_Households() { return masterList_Households; }
     public static HashMap<Integer, Household> masterMap_Households = new HashMap<Integer, Household>();
-    public static HashMap<Integer, Household> getMasterMap_Households() { return masterMap_Households; }
+    public static HashMap<Integer, ArrayList<Person>> masterMap_HouseholdResidents = new HashMap<Integer, ArrayList<Person>>();
     
-    public static ArrayList<Workplace> masterList_Workplaces = new ArrayList<Workplace>();
-    public static HashMap<Integer, Workplace> masterMap_Workplaces = new HashMap<Integer, Workplace>();
+    public static ArrayList<Person> masterList_Persons = new ArrayList<Person>();
+    public static HashMap<Integer, Person> masterMap_Persons = new HashMap<Integer, Person>();
     
     public static ArrayList<School> masterList_Schools = new ArrayList<School>();
     public static HashMap<Integer, School> masterMap_Schools = new HashMap<Integer, School>();
+    public static HashMap<Integer, ArrayList<Person>> masterMap_SchoolStudents = new HashMap<Integer, ArrayList<Person>>(); 
     
-    public int count_SUSCEPTIBLE = 0;
-    public int count_EXPOSED = 0;
-    public int count_INFECTED = 0;
-    public int count_RECOVERED = 0;
+    public static ArrayList<Workplace> masterList_Workplaces = new ArrayList<Workplace>();
+    public static HashMap<Integer, Workplace> masterMap_Workplaces = new HashMap<Integer, Workplace>();
+    public static HashMap<Integer, ArrayList<Person>> masterMap_WorkplaceEmployees = new HashMap<Integer, ArrayList<Person>>();
+    
+    // SEIR counts.
+    public int countSusceptible = 0;
+    public int countExposed = 0;
+    public int countInfected = 0;
+    public int countRecovered = 0;
     
     /**
      * Default constructor.
@@ -77,9 +85,7 @@ public class FuzzyDRController extends SimState {
     {
         try
         {
-        	//System.out.println("Reading shapefiles... // ");
-        	
-            // read the data
+        	// read the data.
         	ShapeFileImporter.read(
         			FuzzyDRController.class.getResource(Config.getShapefileResourcePath()), 
         			FuzzyDRController.class.getResource(Config.getShapefileDbResourcePath()), 
@@ -87,9 +93,9 @@ public class FuzzyDRController extends SimState {
         	            
             System.out.println("");
         	System.out.print("Reading shapefiles... // ... shapefiles loaded, setting up MBR... // ");
-            // Make all the bounding rectangles match one another
+            
+        	// Make all the bounding rectangles match one another.
             MBR = zipCodeSpace.getMBR();
-            /////MBR.expandToInclude(householdSpace.getMBR());
             
             zipCodeSpace.setMBR(MBR);
             householdSpace.setMBR(MBR);
@@ -107,7 +113,7 @@ public class FuzzyDRController extends SimState {
     }
     
     private void initialize() throws IOException {
-    	// clear GeomVectorFields
+    	// clear GeomVectorFields.
     	zipCodeSpace.clear();
     	householdSpace.clear();
     	
@@ -122,20 +128,22 @@ public class FuzzyDRController extends SimState {
         masterMap_Workplaces.clear();
     	
         // clear output collection.
-        // CLEAR SEIR WRITER GOES HERE...
+        // SEIRWriter.seirOutputs.clear();
     	
+        // instantiate model objects.
     	instantiateHouseholds();
-    	instantiateWorkplaces();
     	instantiateSchools();
+    	instantiateWorkplaces();
     	instantiateAgentPopulation();
     	
+    	mapAllAgents();
     }
     
     
     private void instantiateHouseholds() throws IOException {
     	
-    	HouseholdLoader hl = new HouseholdLoader();
-    	hl.loadHouseholds(Config.getHouseholdPath());
+    	HouseholdLoader hL = new HouseholdLoader();
+    	hL.loadHouseholds(Config.getHouseholdPath());
     	
     	for (Household h : masterList_Households) {
     		
@@ -147,21 +155,56 @@ public class FuzzyDRController extends SimState {
     		//householdSpace.addGeometry(new MasonGeometry(h.getGeometry()));
     	}
     	
-    	System.out.println("... household instantiation complete: " + masterList_Households.size() + " households.");
+    	System.out.println("... households instantiation complete: " + masterList_Households.size() + " households.");
     }
     
-    private void instantiateWorkplaces() {
-    	
-    }
-
-    private void instantiateSchools() {
-	
-	}
-	
-	private void instantiateAgentPopulation() {
+	private void instantiateAgentPopulation() throws IOException {
 		
 	}
+	
+    private void instantiateSchools() throws IOException {
+    	
+    	SchoolLoader sL = new SchoolLoader();
+    	sL.loadSchools(Config.getSchoolsPath());
+    	
+    	System.out.println("... schools instantiation complete: " + masterList_Schools.size() + " schools.");
+	}
     
+	private void instantiateWorkplaces() throws IOException {
+    	
+    	WorkplaceLoader hl = new WorkplaceLoader();
+    	hl.loadWorkplaces(Config.getWorkplacePath());
+    	
+    	System.out.println("... workplaces instantiation complete: " + masterList_Workplaces.size() + " workplaces.");
+    }
+
+	private void mapAllAgents() {
+		System.out.println("");
+		System.out.println("Assigning all agents to households, schools, and workplaces...");
+		
+		// map persons as household residents.
+		for (Person p : masterList_Persons) {
+			
+		}
+		System.out.println("   ... all persons mapped to households.");
+		
+		
+		// map persons as school students.
+		for (Person p : masterList_Persons) {
+			
+		}
+		System.out.println("   ... all persons mapped to schools.");
+		
+		
+		// map persons as workplace employees.
+		for (Person p : masterList_Persons) {
+			
+		}
+		System.out.println("   ... all persons mapped to workplaces.");
+		
+		
+	}
+	
 	
 	public void start() {
 		super.start();

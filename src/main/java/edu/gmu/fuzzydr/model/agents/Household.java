@@ -24,6 +24,8 @@ public class Household implements Steppable {
 	public double lat;
 	public double lon;
 	public Color myColor;
+	public Color defaultColor;
+	public boolean isInfected;
 	
 	/** Object that specifies the household XY-coordinate position in the world. */
 	public Point location;
@@ -52,11 +54,11 @@ public class Household implements Steppable {
 		location = SimUtil.convertToXY(this.lat, this.lon);
 		
 		// set position in the world.
-		this.setLocation(location);
+		this.setLocation(location);  
 		
-		// set color for visualization
-		//this.myColor = new Color(23, 184, 232, 1);
-		this.myColor = new Color(23, 184, 232, 50);
+		// set default color for visualization
+		this.defaultColor = new Color(23, 184, 232, 50);
+		this.myColor = this.defaultColor;
 	}
 	
 	@Override
@@ -96,6 +98,18 @@ public class Household implements Steppable {
 	
 	public Color getMyColor() {
 		return myColor;
+	}
+	
+	public void setMyColor(Color myColor) {
+		this.myColor = myColor;
+	}
+	
+	public boolean isInfected() {
+		return isInfected;
+	}
+
+	public void setInfected(boolean isInfected) {
+		this.isInfected = isInfected;
 	}
 	
 	

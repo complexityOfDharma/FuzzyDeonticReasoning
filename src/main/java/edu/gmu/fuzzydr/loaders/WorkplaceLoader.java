@@ -7,8 +7,9 @@ import java.io.InputStreamReader;
 
 import edu.gmu.fuzzydr.controller.Config;
 import edu.gmu.fuzzydr.controller.FuzzyDRController;
+import edu.gmu.fuzzydr.model.agents.School;
 import edu.gmu.fuzzydr.model.agents.Workplace;
-
+	
 public class WorkplaceLoader {
 
 	/**
@@ -20,14 +21,15 @@ public class WorkplaceLoader {
     {
         // Creating instance to avoid static member methods
 		WorkplaceLoader instance = new WorkplaceLoader();
-
-        //InputStream is = instance.getFileAsIOStream("edu/gmu/fuzzydr/resources/synthpop/workplaces.txt");
-        InputStream is = instance.getFileAsIOStream(Config.getWorkplacePath());
-        //DEBUG: instance.printFileContent(is);
-        instance.loadWorkplaces(is);
+		// InputStream is = instance.getFileAsIOStream(Config.getWorkplacePath());
+        instance.loadWorkplaces(Config.getWorkplacePath());
     }
 
-    private InputStream getFileAsIOStream(final String fileName) 
+	public void loadWorkplaces(String file) throws IOException {
+		doLoad(getFileAsIOStream(file));
+	}
+	
+	private InputStream getFileAsIOStream(final String fileName) 
     {
         InputStream ioStream = this.getClass()
             .getClassLoader()
@@ -39,7 +41,7 @@ public class WorkplaceLoader {
         return ioStream;
     }
 
-    private void loadWorkplaces(InputStream is) throws IOException
+    private void doLoad(InputStream is) throws IOException
     {
         try (InputStreamReader isr = new InputStreamReader(is); 
                 BufferedReader br = new BufferedReader(isr);) 
@@ -52,20 +54,17 @@ public class WorkplaceLoader {
             
             while ((line = br.readLine()) != null) {
             	String[] fields = line.split("\t");
+            	
+            	int wrkID = Integer.parseInt(fields[0]);
+            	double wrkLat = Double.parseDouble(fields[1]);
+            	double wrkLon = Double.parseDouble(fields[2]);
+            	
+            	Workplace w = new Workplace(wrkID, wrkLat, wrkLon);
+            	FuzzyDRController.masterList_Workplaces.add(w);
+            	FuzzyDRController.masterMap_Workplaces.put(wrkID, w);
     			
-    			int wrkID = Integer.parseInt(fields[0]);
-    			double wrkLat = Double.parseDouble(fields[1]);
-    			double wrkLon = Double.parseDouble(fields[2]);
-    			
-    			// instantiate household based on data row.
-    			Workplace w = new Workplace(wrkID, wrkLat, wrkLon);
-    			FuzzyDRController.masterList_Workplaces.add(w);
-    			FuzzyDRController.masterMap_Workplaces.put(wrkID, w);
             }
             is.close();
-            
-            //DEBUG: int count = FuzzyDRController.masterList_Workplaces.size();
-            //DEBUG: System.out.println(" ... complete. " + count + " workplaces loaded.");
         }
     }
     
@@ -87,5 +86,6 @@ public class WorkplaceLoader {
             is.close();
         }
     }
-	
+		
 }
+
