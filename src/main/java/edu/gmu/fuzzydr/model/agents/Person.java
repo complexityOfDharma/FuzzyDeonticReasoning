@@ -14,6 +14,7 @@ public abstract class Person implements Steppable {
 	private int uniqueId;
 	private static int nextId = 0;
 	public final String name;
+	public Status seirStatus;
 
 	/**
 	 * Creates a new Person.
@@ -34,10 +35,12 @@ public abstract class Person implements Steppable {
 	
 	//public abstract void makeDecision() throws Exception;
 	
-	
 	public void step(SimState state) {
 		
 	}
 	
+	public Status getStatus() {
+		return this.seirStatus;
+	}
 	
 }

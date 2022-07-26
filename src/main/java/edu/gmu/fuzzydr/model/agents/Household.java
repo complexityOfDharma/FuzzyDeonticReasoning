@@ -3,10 +3,12 @@ package edu.gmu.fuzzydr.model.agents;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.util.Int2D;
+import edu.gmu.fuzzydr.controller.Config;
 import edu.gmu.fuzzydr.controller.FuzzyDRController;
 import edu.gmu.fuzzydr.controller.SimUtil;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
@@ -24,8 +26,8 @@ public class Household implements Steppable {
 	public double lat;
 	public double lon;
 	public Color myColor;
-	public Color defaultColor;
-	public boolean isInfected;
+	//public boolean isInfected;
+	public Status seirStatus;
 	
 	/** Object that specifies the household XY-coordinate position in the world. */
 	public Point location;
@@ -50,15 +52,15 @@ public class Household implements Steppable {
 		this.lat = lat;
 		this.lon = lon;
 		
-		// convert lat/lon into x/y for coordinate position in MASON
+		// convert lat/lon into x/y for coordinate position in MASON.
 		location = SimUtil.convertToXY(this.lat, this.lon);
 		
 		// set position in the world.
 		this.setLocation(location);  
 		
-		// set default color for visualization
-		this.defaultColor = new Color(23, 184, 232, 50);
-		this.myColor = this.defaultColor;
+		// set default color for visualization, assuming a susceptible state for the household.
+		this.seirStatus = Status.SUSCEPTIBLE;
+		this.myColor = Config.getColorSusceptible();
 	}
 	
 	@Override
@@ -66,14 +68,73 @@ public class Household implements Steppable {
 		this.fuzzyDRController = (FuzzyDRController) state;
 		
 		//TODO: get the group of assigned residents at this household to initiate and mix, expose, and infect process amongst them.
+		// BUT HOW TO DO THIS WITHOUT CONSIDERING YOURSELF... REMOVE SELF FROM AGENT LIST AND ONLY COMPARE AGAINST OTHERS??? 
+		// e.g., AND if the Agent ID is notEquals...
 		
-		//TODO: update their status and visualization of infection state.
 		
-		
+		// update Household status.
+		// commenting out for now...     updateHouseholdStatus(state);
+		updateViz();
 	};
 	
 	public void assignModelState(FuzzyDRController state) {
 		this.fuzzyDRController = (FuzzyDRController) state;
+	}
+	
+	/**
+	 * Based on status of household residents, update the Household status to Susceptible, Exposed, or Infected.
+	 * @param state
+	 */
+	public void updateHouseholdStatus(SimState state) {
+		this.fuzzyDRController = (FuzzyDRController) state;
+		
+		// local list for residents at a given household.
+		ArrayList<Person> residents = this.fuzzyDRController.masterMap_HouseholdResidents.get(this.getHouseholdID());
+		
+		// if anyone is Exposed, then the household is exposed.
+		for (Person p : residents) {
+			if (p.getStatus().equals(Status.EXPOSED)) {
+				this.setSEIRStatus(Status.EXPOSED);
+				
+				// break out of the loop once an Exposed resident is identified.
+				break; 
+			}
+		}
+		
+		// if however any resident is infected, override the household status to Infected.
+		for (Person p : residents) {
+			if (p.getStatus().equals(Status.INFECTED)) {
+				this.setSEIRStatus(Status.INFECTED);
+				
+				// break out of the loop once an Infected resident is identified.
+				break;
+			}
+		}
+		
+		// TODO: IF the household (or persons?) are Recovered, color them to denote that immune for some duration of time, then reset.
+		
+		// if no resident is Exposed or Identified, then the Household remains in a Susceptible state.
+		this.setSEIRStatus(Status.SUSCEPTIBLE);
+		this.setMyColor(Config.getColorSusceptible());
+		
+	}
+	
+	public void updateViz() {
+		//System.out.println("Status: " + this.seirStatus);
+		switch(this.seirStatus) {
+			case SUSCEPTIBLE:
+				this.setMyColor(Config.getColorSusceptible());
+				break;
+			case EXPOSED:
+				this.setMyColor(Config.getColorExposed());
+				break;
+			case INFECTED:
+				this.setMyColor(Config.getColorInfected());
+				break;
+			case RECOVERED:
+				this.setMyColor(Config.getColorRecovered());
+				break;
+		}
 	}
 	
 	public Integer getHouseholdID() {
@@ -104,12 +165,20 @@ public class Household implements Steppable {
 		this.myColor = myColor;
 	}
 	
-	public boolean isInfected() {
-		return isInfected;
-	}
+	//public boolean isInfected() {
+	//	return isInfected;
+	//}
 
-	public void setInfected(boolean isInfected) {
-		this.isInfected = isInfected;
+	//public void setInfected(boolean isInfected) {
+	//	this.isInfected = isInfected;
+	//}
+	
+	public Status getSEIRStatus() {
+		return this.seirStatus;
+	}
+	
+	public void setSEIRStatus(Status s) {
+		this.seirStatus = s;
 	}
 	
 	

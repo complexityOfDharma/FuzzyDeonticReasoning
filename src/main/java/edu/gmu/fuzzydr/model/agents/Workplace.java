@@ -10,12 +10,12 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.util.Int2D;
 
+@SuppressWarnings("serial")
 public class Workplace implements Steppable {
 	
 	public int workplaceID;
 	public double lat;
 	public double lon;
-	public Color myColor;
 	
 	/** Object that specifies the household XY-coordinate position in the world. */
 	public Point location;
@@ -48,11 +48,8 @@ public class Workplace implements Steppable {
 	@Override
 	public void step(SimState state) {
 		// TODO Auto-generated method stub
-		this.myColor = new Color(95, 158, 160, 150);
-		
+	
 	};
-	
-	
 	
 	public void setLocation(Point p) 
 	{
@@ -68,7 +65,5 @@ public class Workplace implements Steppable {
 	{
 		return location;
 	}
-	
-	
 	
 }

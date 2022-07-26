@@ -1,5 +1,6 @@
 package edu.gmu.fuzzydr.controller;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -31,6 +32,11 @@ public class Config {
 	
 	private static final String timestamp = getDateTime();
 	
+	private static final Color colorSusceptible = new Color(23, 184, 232, 50);
+	private static final Color colorExposed = new Color(79, 232, 23, 50);
+	private static final Color colorInfected = new Color(232, 71, 23, 50);
+	private static final Color colorRecovered = new Color(176, 23, 232, 50);
+	
 	/**
 	 * @return timestamp for unique output file names.
 	 */
@@ -60,6 +66,22 @@ public class Config {
 		return shapefileDbResourcePath;
 	}
 	
+	public static Color getColorSusceptible() {
+		return colorSusceptible;
+	}
+
+	public static Color getColorExposed() {
+		return colorExposed;
+	}
+
+	public static Color getColorInfected() {
+		return colorInfected;
+	}
+
+	public static Color getColorRecovered() {
+		return colorRecovered;
+	}
+
 	/**
 	 * Test.
 	 * @param args
