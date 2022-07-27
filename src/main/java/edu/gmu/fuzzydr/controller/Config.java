@@ -23,9 +23,10 @@ public class Config {
 	
 	// NOTE: text file path names DO NOT require preceding slash.
 	private static final String householdResourcePath = "edu/gmu/fuzzydr/resources/synthpop/households.txt";
+	private static final String personResourcePath = "edu/gmu/fuzzydr/resources/synthpop/people.txt";
 	private static final String workplaceResourcePath = "edu/gmu/fuzzydr/resources/synthpop/workplaces.txt";
 	private static final String schoolResourcePath = "edu/gmu/fuzzydr/resources/synthpop/schools.txt";
-	
+		
 	// NOTE: shape file path names require preceding slash.
 	private static final String shapefileResourcePath = "/edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.shp";
 	private static final String shapefileDbResourcePath = "/edu/gmu/fuzzydr/resources/locations/ZipCodes_WGS84.dbf";
@@ -56,6 +57,10 @@ public class Config {
 	
 	public static String getSchoolsPath() {
 		return schoolResourcePath;
+	}
+	
+	public static String getPersonPath() {
+		return personResourcePath;
 	}
 	
 	public static String getShapefileResourcePath() {

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import com.vividsolutions.jts.geom.Envelope;
 
 import edu.gmu.fuzzydr.loaders.HouseholdLoader;
+import edu.gmu.fuzzydr.loaders.PersonLoader;
 import edu.gmu.fuzzydr.loaders.SchoolLoader;
 import edu.gmu.fuzzydr.loaders.WorkplaceLoader;
 import edu.gmu.fuzzydr.model.agents.Household;
@@ -121,6 +122,9 @@ public class FuzzyDRController extends SimState {
     	masterList_Households.clear();
     	masterMap_Households.clear();
         
+    	masterList_Persons.clear(); 
+        masterMap_Persons.clear();
+    	
         masterList_Schools.clear(); 
         masterMap_Schools.clear();
         
@@ -132,9 +136,9 @@ public class FuzzyDRController extends SimState {
     	
         // instantiate model objects.
     	instantiateHouseholds();
+    	instantiateAgentPopulation();
     	instantiateSchools();
     	instantiateWorkplaces();
-    	instantiateAgentPopulation();
     	
     	mapAllAgents();
     }
@@ -160,6 +164,13 @@ public class FuzzyDRController extends SimState {
     
 	private void instantiateAgentPopulation() throws IOException {
 		
+		PersonLoader sL = new PersonLoader();
+    	sL.loadPeople(Config.getPersonPath());
+    	
+    	// TODO: for (Person p : masterList_Persons) { p.assignModelState(this); a.assignProbabilities(this); }
+    	
+    	System.out.println("... people instantiation complete: " + masterList_Persons.size() + " people.");
+		
 	}
 	
     private void instantiateSchools() throws IOException {
@@ -184,25 +195,56 @@ public class FuzzyDRController extends SimState {
 		
 		// map persons as household residents.
 		for (Person p : masterList_Persons) {
+			int hhID = p.getHousehold();
 			
+			if (masterMap_HouseholdResidents.containsKey(hhID)) {
+				ArrayList<Person> _residents = masterMap_HouseholdResidents.get(hhID);
+				_residents.add(p);
+			} else {
+				ArrayList<Person> _residents = new ArrayList<Person>();
+				_residents.add(p);
+				masterMap_HouseholdResidents.put(hhID, _residents);
+			}
 		}
 		System.out.println("   ... all persons mapped to households.");
 		
 		
 		// map persons as school students.
 		for (Person p : masterList_Persons) {
+			int schID = p.getSchool();
 			
+			// if the person is a youth and going to school.
+			if (schID != 0) {
+				if (masterMap_SchoolStudents.containsKey(schID)) {
+					ArrayList<Person> _students = masterMap_SchoolStudents.get(schID);
+					_students.add(p);
+				} else {
+					ArrayList<Person> _students = new ArrayList<Person>();
+					_students.add(p);
+					masterMap_SchoolStudents.put(schID, _students);
+				}
+			}
 		}
 		System.out.println("   ... all persons mapped to schools.");
 		
 		
 		// map persons as workplace employees.
 		for (Person p : masterList_Persons) {
+			int wrkID = p.getWorkplace();
 			
+			// if the person has a job and goes to a workplace.
+			if (wrkID != 0) {
+				if (masterMap_WorkplaceEmployees.containsKey(wrkID)) {
+					ArrayList<Person> _employees = masterMap_WorkplaceEmployees.get(wrkID);
+					_employees.add(p);
+				} else {
+					ArrayList<Person> _employees = new ArrayList<Person>();
+					_employees.add(p);
+					masterMap_WorkplaceEmployees.put(wrkID, _employees);
+				}
+			}
 		}
 		System.out.println("   ... all persons mapped to workplaces.");
-		
-		
 	}
 	
 	
