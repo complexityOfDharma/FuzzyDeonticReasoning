@@ -71,9 +71,7 @@ public class Household implements Steppable {
 		// BUT HOW TO DO THIS WITHOUT CONSIDERING YOURSELF... REMOVE SELF FROM AGENT LIST AND ONLY COMPARE AGAINST OTHERS??? 
 		// e.g., AND if the Agent ID is notEquals...
 		
-		
-		// update Household status.
-		// commenting out for now...     updateHouseholdStatus(state);
+		updateHouseholdStatus(state);
 		updateViz();
 	};
 	
@@ -99,24 +97,21 @@ public class Household implements Steppable {
 				// break out of the loop once an Exposed resident is identified.
 				break; 
 			}
-		}
 		
-		// if however any resident is infected, override the household status to Infected.
-		for (Person p : residents) {
+			// if however any resident is infected, override the household status to Infected.
 			if (p.getStatus().equals(Status.INFECTED)) {
 				this.setSEIRStatus(Status.INFECTED);
 				
 				// break out of the loop once an Infected resident is identified.
 				break;
 			}
+			
+			// TODO: IF the household (or persons?) are Recovered, color them to denote that immune for some duration of time, then reset.
+			
+			// if no resident is Exposed or Identified, then the Household remains in a Susceptible state.
+			this.setSEIRStatus(Status.SUSCEPTIBLE);
+			//this.setMyColor(Config.getColorSusceptible());
 		}
-		
-		// TODO: IF the household (or persons?) are Recovered, color them to denote that immune for some duration of time, then reset.
-		
-		// if no resident is Exposed or Identified, then the Household remains in a Susceptible state.
-		this.setSEIRStatus(Status.SUSCEPTIBLE);
-		this.setMyColor(Config.getColorSusceptible());
-		
 	}
 	
 	public void updateViz() {

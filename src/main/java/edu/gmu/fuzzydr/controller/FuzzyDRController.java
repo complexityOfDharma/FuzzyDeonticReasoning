@@ -57,6 +57,7 @@ public class FuzzyDRController extends SimState {
     
     // outbreak parameters.
     public int initialInfections = 10000;
+    public int timeStepToStartInfection = 3;
     
     // SEIR counts.
     public int countSusceptible = 0;
@@ -256,7 +257,7 @@ public class FuzzyDRController extends SimState {
 	 * Spike the population with infected individuals to start the outbreak.
 	 */
 	public void seedInfection() {
-		System.out.println("Seeding infections within the population.\n");
+		System.out.println("\nSeeding infections within the population...\n");
 		
 		Person p;
 		
@@ -291,8 +292,8 @@ public class FuzzyDRController extends SimState {
 			schedule.scheduleRepeating(h, 3, 1.0);
 		}
 		
-		// start the initial infection at time 20.
-		schedule.scheduleOnce(20, 4, new Steppable() {
+		// start the initial infection at specified time step.
+		schedule.scheduleOnce(timeStepToStartInfection, 4, new Steppable() {
 			public void step(SimState state) {
 				seedInfection();
 			}
@@ -347,6 +348,22 @@ public class FuzzyDRController extends SimState {
                     System.out.println("Simulation terminated... no new infections.");
                     state.kill();
 				}
+				
+				// TODO: can also update these repeating schedules to account for all of Households status update
+				
+				
+				// DEBUG prints...
+				int S_homes = 0;
+				int E_homes = 0;
+				int I_homes = 0;
+				int R_homes = 0;
+				for (Household h : masterList_Households) {
+					if (h.getSEIRStatus() == Status.SUSCEPTIBLE) { S_homes++; }
+					if (h.getSEIRStatus() == Status.EXPOSED) { E_homes++; }
+					if (h.getSEIRStatus() == Status.INFECTED) { I_homes++; }
+					if (h.getSEIRStatus() == Status.RECOVERED) { R_homes++; }
+				}
+				System.out.println("DEBUG:  Households S: " + S_homes + ", E: " + E_homes + ", I: "+ I_homes + ", R: " + R_homes);
 			}
 		});
 	}

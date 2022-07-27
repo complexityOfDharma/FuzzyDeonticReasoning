@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import edu.gmu.fuzzydr.controller.Config;
 import edu.gmu.fuzzydr.controller.FuzzyDRController;
 import edu.gmu.fuzzydr.model.agents.Household;
+import edu.gmu.fuzzydr.model.agents.Status;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
@@ -26,8 +27,8 @@ public class FuzzyDRgui extends GUIState {
 	
 	private GeomVectorFieldPortrayal zipCodesPortrayal = new GeomVectorFieldPortrayal();
 	private GeomVectorFieldPortrayal householdsPortrayal = new GeomVectorFieldPortrayal();
-	private GeomVectorFieldPortrayal exposedHouseholdPortrayal = new GeomVectorFieldPortrayal();
-	private GeomVectorFieldPortrayal infectedHouseholdPortrayal = new GeomVectorFieldPortrayal();
+	private GeomVectorFieldPortrayal exposedHouseholdsPortrayal = new GeomVectorFieldPortrayal();
+	private GeomVectorFieldPortrayal infectedHouseholdsPortrayal = new GeomVectorFieldPortrayal();
 	
 	public FuzzyDRgui() throws IOException {
 		super(new FuzzyDRController(Config.RANDOM_SEED));
@@ -53,8 +54,7 @@ public class FuzzyDRgui extends GUIState {
 		super.start();
 		setupPortrayals();
 		
-		System.out.println("");
-		System.out.println("Starting simulation visualization...");
+		System.out.println("\nStarting simulation visualization...\n");
 		
 		//TODO: if XYSeries objects for plots, do clear them here.
 	}
@@ -72,6 +72,11 @@ public class FuzzyDRgui extends GUIState {
 		// Shape layers
 		display.attach(zipCodesPortrayal, "Fairfax County Zip Codes");
 		display.attach(householdsPortrayal, "Households");
+		
+		// TODO: figure out if we can visualize *ONLY* the exposed/infected households, or is redrawing all households 3 times every step?
+		// TODO: also, can set color and scale to be object attribute driven, so maybe only need 1 inner class?
+		display.attach(exposedHouseholdsPortrayal, "Exposed Households");
+		display.attach(infectedHouseholdsPortrayal, "Infected Households");
 		
 		// Point layers
 		displayFrame = display.createFrame();
@@ -95,6 +100,12 @@ public class FuzzyDRgui extends GUIState {
 		
 		householdsPortrayal.setField(fuzzyDRController.householdSpace);
 		householdsPortrayal.setPortrayalForAll(new HouseholdPortrayal());
+		
+		exposedHouseholdsPortrayal.setField(fuzzyDRController.householdSpace);
+		exposedHouseholdsPortrayal.setPortrayalForAll(new ExposedHouseholdPortrayal());
+		
+		infectedHouseholdsPortrayal.setField(fuzzyDRController.householdSpace);
+		infectedHouseholdsPortrayal.setPortrayalForAll(new InfectedHouseholdPortrayal());
 		
 		display.reset();
 		display.setBackdrop(Color.WHITE);
@@ -136,8 +147,51 @@ public class FuzzyDRgui extends GUIState {
         }
     }
 	
-	
-	
+    /** Inner class definition for the portrayal of exposed households. */
+    @SuppressWarnings("serial")
+	class ExposedHouseholdPortrayal extends RectanglePortrayal2D {
+    	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+        {
+            MasonGeometry mg = (MasonGeometry) object;
+    		Integer id = mg.getIntegerAttribute("householdID");
+
+    		//Household h = fuzzyDRController.masterMap_Households.get(id);
+    		Household h = FuzzyDRController.masterMap_Households.get(id);
+    		
+    		paint = h.getMyColor();
+    		
+    		if (h.getSEIRStatus() == Status.EXPOSED) {
+    			scale = 1;
+        		filled = false;
+        		
+        		// TODO: does this make this portrayal *ONLY* draw if the conditions are met?
+        		super.draw(object, graphics, info);
+    		}
+    	}
+    }
+    
+    /** Inner class definition for the portrayal of infected households. */
+    @SuppressWarnings("serial")
+	class InfectedHouseholdPortrayal extends RectanglePortrayal2D {
+    	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+        {
+            MasonGeometry mg = (MasonGeometry) object;
+    		Integer id = mg.getIntegerAttribute("householdID");
+
+    		//Household h = fuzzyDRController.masterMap_Households.get(id);
+    		Household h = FuzzyDRController.masterMap_Households.get(id);
+    		
+    		paint = h.getMyColor();
+    		
+    		if (h.getSEIRStatus() == Status.INFECTED) {
+    			scale = 1;
+        		filled = false;
+        		
+        		// TODO: does this make this portrayal *ONLY* draw if the conditions are met?
+                super.draw(object, graphics, info);
+    		}
+    	}
+    }
     
     
     
