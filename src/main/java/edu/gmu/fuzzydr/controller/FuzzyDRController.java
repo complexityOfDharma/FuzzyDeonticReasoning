@@ -24,8 +24,10 @@ import edu.gmu.fuzzydr.loaders.WorkplaceLoader;
 import edu.gmu.fuzzydr.model.agents.Household;
 import edu.gmu.fuzzydr.model.agents.Person;
 import edu.gmu.fuzzydr.model.agents.School;
+import edu.gmu.fuzzydr.model.agents.Status;
 import edu.gmu.fuzzydr.model.agents.Workplace;
 import sim.engine.SimState;
+import sim.engine.Steppable;
 import sim.field.geo.GeomVectorField;
 import sim.io.geo.ShapeFileImporter;
 import sim.util.geo.MasonGeometry;
@@ -52,6 +54,9 @@ public class FuzzyDRController extends SimState {
     public static ArrayList<Workplace> masterList_Workplaces = new ArrayList<Workplace>();
     public static HashMap<Integer, Workplace> masterMap_Workplaces = new HashMap<Integer, Workplace>();
     public static HashMap<Integer, ArrayList<Person>> masterMap_WorkplaceEmployees = new HashMap<Integer, ArrayList<Person>>();
+    
+    // outbreak parameters.
+    public int initialInfections = 10000;
     
     // SEIR counts.
     public int countSusceptible = 0;
@@ -247,15 +252,109 @@ public class FuzzyDRController extends SimState {
 		System.out.println("   ... all persons mapped to workplaces.");
 	}
 	
-	
+	/**
+	 * Spike the population with infected individuals to start the outbreak.
+	 */
+	public void seedInfection() {
+		System.out.println("Seeding infections within the population.\n");
+		
+		Person p;
+		
+		// randomly seed infection(s).
+		for (int i = 0; i < initialInfections; i++) {
+			do {  // do-loop to prevent seeded infection agent from being randomly selected again.
+				p = masterList_Persons.get(random.nextInt(masterList_Persons.size()));
+			} while (p.getStatus() != Status.SUSCEPTIBLE);
+			
+			p.setStatus(Status.INFECTED);
+		}
+	}
+		
 	public void start() {
 		super.start();
 		
-		for (Household h : masterList_Households) {
-			schedule.scheduleRepeating(h, 0, 1.0);
+		// TODO: seed the infection... consider on a delay versus t=0.
+		
+		for (Person p : masterList_Persons) {
+			schedule.scheduleRepeating(p, 0, 1.0);
 		}
 		
-		//DEBUG: System.out.println("All households added to simulation schedule.");
+		for (School s : masterList_Schools) {
+			schedule.scheduleRepeating(s, 1, 1.0);
+		}
+		
+		for (Workplace w : masterList_Workplaces) {
+			schedule.scheduleRepeating(w, 2, 1.0);
+		}
+		
+		for (Household h : masterList_Households) {
+			schedule.scheduleRepeating(h, 3, 1.0);
+		}
+		
+		// start the initial infection at time 20.
+		schedule.scheduleOnce(20, 4, new Steppable() {
+			public void step(SimState state) {
+				seedInfection();
+			}
+		});
+		
+		// implement containment strategies as authority-driven institutions.
+		schedule.scheduleRepeating(0, 5, new Steppable() {
+			public void step(SimState state) {
+				
+				// TODO: implement some time phased containment institutions, triggered by Step count or something similar.
+				
+			}
+		});
+		
+		// terminate if end conditions are met.
+		schedule.scheduleRepeating(0, 6, new Steppable() {
+			public void step(SimState state) {
+				countSusceptible = 0;
+				countExposed = 0;
+				countInfected = 0;
+				countRecovered = 0;
+				
+				for (Person p : masterList_Persons) {
+					switch (p.getStatus()) {
+						case SUSCEPTIBLE:
+							countSusceptible++;
+							break;
+						case EXPOSED:
+							countExposed++;
+							break;
+						case INFECTED:
+							countInfected++;
+							break;
+						case RECOVERED:
+							countRecovered++;
+							break;
+					}
+				}
+				
+				System.out.println("Day " + state.schedule.getSteps() + " outbreak statistics --- "
+						+ " S: " + countSusceptible
+						+ ", E: " + countExposed
+						+ ", I: " + countInfected
+						+ ", R: " + countRecovered
+						);
+				
+				// TODO: append-write the day's statistics to the SEIR output file. 
+				
+				if ((state.schedule.getSteps() > 20) && (countInfected == 0) && (countRecovered == 0)) {
+					System.out.println("");
+					System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                    System.out.println("Simulation terminated... no new infections.");
+                    state.kill();
+				}
+			}
+		});
+	}
+	
+	public void finish() {
+		super.finish();
+		
+		// TODO: generate the final output file of results.
 	}
 	
     

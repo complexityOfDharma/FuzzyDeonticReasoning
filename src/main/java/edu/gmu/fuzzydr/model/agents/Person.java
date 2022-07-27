@@ -83,6 +83,10 @@ public class Person implements Steppable {
 		return this.seirStatus;
 	}
 	
+	public void setStatus(Status status) {
+		this.seirStatus = status;
+	}
+	
 	public int getHousehold() {
 		return this.householdID;
 	}
