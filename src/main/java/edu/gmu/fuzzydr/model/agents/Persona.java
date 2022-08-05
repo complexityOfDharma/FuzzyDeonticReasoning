@@ -12,8 +12,8 @@ public class Persona extends Person {
 	
 	// stuff that is specific to ideology, etc,...
 	
-	public Persona(String name) {
-		super(name);
+	public Persona(int a, int b, int c, String n, int d, int e) {
+		super(a, b, c, n, d, e);
 		// TODO Auto-generated constructor stub
 	}
 
