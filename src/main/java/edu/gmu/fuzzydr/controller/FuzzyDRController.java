@@ -256,7 +256,7 @@ public class FuzzyDRController extends SimState {
 	/**
 	 * Spike the population with infected individuals to start the outbreak.
 	 */
-	public void seedInfection() {
+	public void seedInfection(SimState state) {
 		System.out.println("\nSeeding infections within the population...\n");
 		
 		Person p;
@@ -269,6 +269,13 @@ public class FuzzyDRController extends SimState {
 			
 			p.setStatus(Status.INFECTED);
 		}
+		
+		// appropriately update status of impacted households.
+		for (Household h : masterList_Households) {
+			h.updateHouseholdStatus(state);
+			h.updateViz();
+		}
+		
 	}
 		
 	public void start() {
@@ -295,7 +302,7 @@ public class FuzzyDRController extends SimState {
 		// start the initial infection at specified time step.
 		schedule.scheduleOnce(timeStepToStartInfection, 4, new Steppable() {
 			public void step(SimState state) {
-				seedInfection();
+				seedInfection(state);
 			}
 		});
 		
