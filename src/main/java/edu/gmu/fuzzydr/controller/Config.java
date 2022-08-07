@@ -33,10 +33,10 @@ public class Config {
 	
 	private static final String timestamp = getDateTime();
 	
-	private static final Color colorSusceptible = new Color(23, 184, 232, 50);
-	private static final Color colorExposed = new Color(79, 232, 23, 50);
-	private static final Color colorInfected = new Color(232, 71, 23, 50);
-	private static final Color colorRecovered = new Color(176, 23, 232, 50);
+	private static final Color colorSusceptible = new Color(23, 184, 232, 50);   // teal (#17B8E8).
+	private static final Color colorExposed = new Color(79, 232, 23, 300);        // lime (#4FE817).
+	private static final Color colorInfected = new Color(232, 71, 23, 200);       // orange (#E84717).
+	private static final Color colorRecovered = new Color(176, 23, 232, 200);     // purple (#B017E8).
 	
 	/**
 	 * @return timestamp for unique output file names.

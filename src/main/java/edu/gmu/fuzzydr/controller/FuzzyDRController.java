@@ -56,8 +56,12 @@ public class FuzzyDRController extends SimState {
     public static HashMap<Integer, ArrayList<Person>> masterMap_WorkplaceEmployees = new HashMap<Integer, ArrayList<Person>>();
     
     // outbreak parameters.
-    public int initialInfections = 10000;
-    public int timeStepToStartInfection = 3;
+    public static int initialInfections = 10000;
+    public static int timeStepToStartInfection = 3;  // in days.
+    public static int infectionDuration = 10;   // in days.
+    public static int incubationPeriod = 2;  // in days.
+    // TODO: some parameter for "immunity" duration after recovery... if exceeds typical model run durations, effectively infinite
+    public static double pTransmission = 0.6;
     
     // SEIR counts.
     public int countSusceptible = 0;
@@ -173,10 +177,13 @@ public class FuzzyDRController extends SimState {
 		PersonLoader sL = new PersonLoader();
     	sL.loadPeople(Config.getPersonPath());
     	
-    	// TODO: for (Person p : masterList_Persons) { p.assignModelState(this); a.assignProbabilities(this); }
+    	for (Person p : masterList_Persons) {
+    		p.assignModelState(this);
+    		
+    		// TODO: assign vax effectiveness here, or other contagion modifiers.
+    	}
     	
     	System.out.println("... people instantiation complete: " + masterList_Persons.size() + " people.");
-		
 	}
 	
     private void instantiateSchools() throws IOException {

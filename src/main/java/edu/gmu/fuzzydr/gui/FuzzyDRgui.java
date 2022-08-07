@@ -29,6 +29,7 @@ public class FuzzyDRgui extends GUIState {
 	private GeomVectorFieldPortrayal householdsPortrayal = new GeomVectorFieldPortrayal();
 	private GeomVectorFieldPortrayal exposedHouseholdsPortrayal = new GeomVectorFieldPortrayal();
 	private GeomVectorFieldPortrayal infectedHouseholdsPortrayal = new GeomVectorFieldPortrayal();
+	private GeomVectorFieldPortrayal recoveredHouseholdsPortrayal = new GeomVectorFieldPortrayal();
 	
 	public FuzzyDRgui() throws IOException {
 		super(new FuzzyDRController(Config.RANDOM_SEED));
@@ -75,8 +76,9 @@ public class FuzzyDRgui extends GUIState {
 		
 		// TODO: figure out if we can visualize *ONLY* the exposed/infected households, or is redrawing all households 3 times every step?
 		// TODO: also, can set color and scale to be object attribute driven, so maybe only need 1 inner class?
-		display.attach(exposedHouseholdsPortrayal, "Exposed Households");
-		display.attach(infectedHouseholdsPortrayal, "Infected Households");
+		//display.attach(exposedHouseholdsPortrayal, "Exposed Households");
+		//display.attach(infectedHouseholdsPortrayal, "Infected Households");
+		//display.attach(recoveredHouseholdsPortrayal, "Recovered Households");
 		
 		// Point layers
 		displayFrame = display.createFrame();
@@ -101,11 +103,14 @@ public class FuzzyDRgui extends GUIState {
 		householdsPortrayal.setField(fuzzyDRController.householdSpace);
 		householdsPortrayal.setPortrayalForAll(new HouseholdPortrayal());
 		
-		exposedHouseholdsPortrayal.setField(fuzzyDRController.householdSpace);
-		exposedHouseholdsPortrayal.setPortrayalForAll(new ExposedHouseholdPortrayal());
+		//exposedHouseholdsPortrayal.setField(fuzzyDRController.householdSpace);
+		//exposedHouseholdsPortrayal.setPortrayalForAll(new ExposedHouseholdPortrayal());
 		
-		infectedHouseholdsPortrayal.setField(fuzzyDRController.householdSpace);
-		infectedHouseholdsPortrayal.setPortrayalForAll(new InfectedHouseholdPortrayal());
+		//infectedHouseholdsPortrayal.setField(fuzzyDRController.householdSpace);
+		//infectedHouseholdsPortrayal.setPortrayalForAll(new RecoveredHouseholdPortrayal());
+		
+		//recoveredHouseholdsPortrayal.setField(fuzzyDRController.householdSpace);
+		//recoveredHouseholdsPortrayal.setPortrayalForAll(new RecoveredHouseholdPortrayal());
 		
 		display.reset();
 		display.setBackdrop(Color.WHITE);
@@ -140,16 +145,23 @@ public class FuzzyDRgui extends GUIState {
     		
     		paint = h.getMyColor();
     		
-    		scale = 1;
-    		filled = false;
+    		//scale = 1;
+    		scale = h.getMyVizScale();
+    		//filled = false;
+    		if (h.seirStatus != Status.SUSCEPTIBLE) {
+    			filled = true;
+    		} else {
+    			filled = false;
+    		}
     		
             super.draw(object, graphics, info);
         }
     }
 	
     /** Inner class definition for the portrayal of exposed households. */
-    @SuppressWarnings("serial")
-	class ExposedHouseholdPortrayal extends RectanglePortrayal2D {
+    //@SuppressWarnings("serial")
+	/*
+    class ExposedHouseholdPortrayal extends RectanglePortrayal2D {
     	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info)
         {
             MasonGeometry mg = (MasonGeometry) object;
@@ -161,18 +173,20 @@ public class FuzzyDRgui extends GUIState {
     		paint = h.getMyColor();
     		
     		if (h.getSEIRStatus() == Status.EXPOSED) {
-    			scale = 1;
-        		filled = false;
+    			scale = 5;
+        		filled = true;
         		
         		// TODO: does this make this portrayal *ONLY* draw if the conditions are met?
         		super.draw(object, graphics, info);
     		}
     	}
     }
+    */
     
     /** Inner class definition for the portrayal of infected households. */
-    @SuppressWarnings("serial")
-	class InfectedHouseholdPortrayal extends RectanglePortrayal2D {
+    //@SuppressWarnings("serial")
+	/*
+    class InfectedHouseholdPortrayal extends RectanglePortrayal2D {
     	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info)
         {
             MasonGeometry mg = (MasonGeometry) object;
@@ -184,34 +198,39 @@ public class FuzzyDRgui extends GUIState {
     		paint = h.getMyColor();
     		
     		if (h.getSEIRStatus() == Status.INFECTED) {
-    			scale = 1;
-        		filled = false;
+    			scale = 5;
+        		filled = true;
         		
         		// TODO: does this make this portrayal *ONLY* draw if the conditions are met?
                 super.draw(object, graphics, info);
     		}
     	}
     }
+    */
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    /** Inner class definition for the portrayal of infected households. */
+    //@SuppressWarnings("serial")
+	/*
+    class RecoveredHouseholdPortrayal extends RectanglePortrayal2D {
+    	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+        {
+            MasonGeometry mg = (MasonGeometry) object;
+    		Integer id = mg.getIntegerAttribute("householdID");
+
+    		//Household h = fuzzyDRController.masterMap_Households.get(id);
+    		Household h = FuzzyDRController.masterMap_Households.get(id);
+    		
+    		paint = h.getMyColor();
+    		
+    		if (h.getSEIRStatus() == Status.RECOVERED) {
+    			scale = 5;
+        		filled = true;
+        		
+        		// TODO: does this make this portrayal *ONLY* draw if the conditions are met?
+                super.draw(object, graphics, info);
+    		}
+    	}
+    }
+    */
 	
 }

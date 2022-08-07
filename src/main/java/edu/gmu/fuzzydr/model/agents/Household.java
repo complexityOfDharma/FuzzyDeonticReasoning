@@ -26,6 +26,8 @@ public class Household implements Steppable {
 	public double lat;
 	public double lon;
 	public Color myColor;
+	public double vizScale;
+	
 	//public boolean isInfected;
 	public Status seirStatus;
 	
@@ -67,9 +69,24 @@ public class Household implements Steppable {
 	public void step(SimState state) {
 		this.fuzzyDRController = (FuzzyDRController) state;
 		
-		//TODO: get the group of assigned residents at this household to initiate and mix, expose, and infect process amongst them.
-		// BUT HOW TO DO THIS WITHOUT CONSIDERING YOURSELF... REMOVE SELF FROM AGENT LIST AND ONLY COMPARE AGAINST OTHERS??? 
-		// e.g., AND if the Agent ID is notEquals...
+		ArrayList<Person> residents = this.fuzzyDRController.masterMap_HouseholdResidents.get(this.getHouseholdID());
+		
+		for (Person p : residents) {
+			// assuming that an 'exposed' state is still infectious with equal infectivity as an 'infected' state.
+			if (p.getStatus().equals(Status.EXPOSED) || p.getStatus().equals(Status.INFECTED)) {
+				for (Person p2 : residents) {
+					// to ensure that primary resident is only interacting with other residents and not self.
+					if (p.getPersonID() != p2.getPersonID()) {
+						// if the other resident is not 'exposed' or 'infected' then expose them to a new infection.
+						if (p2.getStatus().equals(Status.SUSCEPTIBLE)) {
+							// the other resident is now exposed to the primary resident's infection.
+							p2.expose();
+						}
+					}
+				}
+				break;
+			}
+		}
 		
 		updateHouseholdStatus(state);
 		updateViz();
@@ -119,15 +136,19 @@ public class Household implements Steppable {
 		switch(this.seirStatus) {
 			case SUSCEPTIBLE:
 				this.setMyColor(Config.getColorSusceptible());
+				this.vizScale = 1;
 				break;
 			case EXPOSED:
 				this.setMyColor(Config.getColorExposed());
+				this.vizScale = 2;
 				break;
 			case INFECTED:
 				this.setMyColor(Config.getColorInfected());
+				this.vizScale = 2;
 				break;
 			case RECOVERED:
 				this.setMyColor(Config.getColorRecovered());
+				this.vizScale = 2;
 				break;
 		}
 	}
@@ -159,6 +180,11 @@ public class Household implements Steppable {
 	public void setMyColor(Color myColor) {
 		this.myColor = myColor;
 	}
+	
+	public Double getMyVizScale() {
+		return vizScale;
+	}
+	
 	
 	//public boolean isInfected() {
 	//	return isInfected;
